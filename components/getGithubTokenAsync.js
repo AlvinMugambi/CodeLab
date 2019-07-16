@@ -4,7 +4,7 @@ import { AuthSession } from "expo";
 const REDIRECT_URL = AuthSession.getRedirectUrl();
 
 // Gihub API keys...
-const github = {
+export const github = {
   id: "631e5c77a9a60f22f5f4",
   secret: "0b3fbf2e96adff92482b32edd21ba43465bba53f"
 };

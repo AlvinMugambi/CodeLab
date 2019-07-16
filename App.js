@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { createStackNavigator } from "react-navigation";
+import {
+  createStackNavigator,
+  createSwitchNavigator,
+  createAppContainer
+} from "react-navigation";
 import Splash from "./components/Splash";
 import Login from "./components/Login";
+import Profiles from "./components/AllProfiles";
+import MyApollo from "./components/apollo";
 
 class App extends Component {
   constructor(props) {
@@ -33,4 +39,18 @@ const styles = StyleSheet.create({
   }
 });
 
-export default App;
+const Navigator = createSwitchNavigator(
+  {
+    // For authentication
+    Auth: Login,
+    // For fetching all profiles
+    Profiles: Profiles,
+    // Main app
+    Main: App
+  },
+  {
+    initialRouteName: "Main"
+  }
+);
+
+export default createAppContainer(Navigator);

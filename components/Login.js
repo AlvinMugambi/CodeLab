@@ -13,10 +13,12 @@ import {
 import firebase from "firebase";
 import getGithubTokenAsync from "./getGithubTokenAsync";
 import GithubButton from "./GithubButton";
+import Profiles from "./AllProfiles";
+import MyApollo from "./apollo";
+import CenterSpinner from "./CenterSpinner";
 
-const GithubStorageKey = "@Expo:GithubToken"; //lolz whatever you want.
+const GithubStorageKey = "@Expo:GithubToken";
 
-// Get this at: https://console.firebase.google.com/
 const firebaseConfig = {
   apiKey: "AIzaSyC73HiDOEdsS5JH8JRmX6d4wdhzJMF4Ke8",
   authDomain: "codelab-ab6b4.firebaseapp.com",
@@ -73,7 +75,6 @@ export default class Login extends React.Component {
       isSignedIn: false
     };
   }
-  // state = { isSignedIn: false };
 
   componentDidMount() {
     this.setupFirebaseAsync();
@@ -103,15 +104,7 @@ export default class Login extends React.Component {
     if (this.state.isSignedIn) {
       const user = firebase.auth().currentUser || {};
 
-      return (
-        <View style={styles.container}>
-          <Image source={{ uri: user.photoURL }} style={styles.image} />
-          <Text style={styles.paragraph}>Welcome {user.displayName}</Text>
-          <Text style={styles.paragraph} onPress={signOutAsync}>
-            Logout
-          </Text>
-        </View>
-      );
+      return <MyApollo token={user.GithubToken} />;
     }
     return (
       <View style={styles.container}>
