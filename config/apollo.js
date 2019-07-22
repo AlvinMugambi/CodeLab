@@ -6,15 +6,15 @@ import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloProvider } from "react-apollo";
 import App from "../App";
-import Profiles from "./AllProfiles";
+import Profiles from "../screens/AllProfiles";
 import { github } from "./getGithubTokenAsync";
+import CenterSpinner from "../components/CenterSpinner";
 
-const API_KEY = "f0394a8bae7e633af2f6d5b6c69ef0c143422bab";
 const makeApolloClient = token => {
   const link = new HttpLink({
     uri: `https://api.github.com/graphql`,
     headers: {
-      authorization: `Bearer ${API_KEY}`
+      authorization: `Bearer ${token}`
     }
   });
   const cache = new InMemoryCache();
@@ -28,15 +28,14 @@ const makeApolloClient = token => {
 
 console.disableYellowBox = true;
 
-export default class MyApollo extends React.Component {
+export default class ApolloWrapper extends React.Component {
   state = {
     client: null
   };
 
-  // bootstrap session in componentDidMount
   async componentDidMount() {
-    const { token } = this.props;
-    console.log(token);
+    console.log(this.props);
+    let token = await AsyncStorage.getItem("@Expo:GithubToken");
     const client = makeApolloClient(token);
     this.setState({
       client
@@ -45,11 +44,7 @@ export default class MyApollo extends React.Component {
 
   render() {
     if (!this.state.client) {
-      return (
-        <Text style={{ justifyContent: "center", alignSelf: "center" }}>
-          Loading...
-        </Text>
-      );
+      return <CenterSpinner />;
     }
     return (
       <ApolloProvider client={this.state.client}>

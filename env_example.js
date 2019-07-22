@@ -1,0 +1,35 @@
+import Constants from "expo-constants";
+
+const ENV = {
+  dev: {
+    GITHUB_ID: "YOUR-GITUHB-ID",
+    GITHUB_SECRET: "YOUR-GITHUB_SECRET",
+    FIREBASE_API_KEY: "YOUR-FIREBASE_API_KEY",
+    FIREBASE_AUTH_DOMAIN: "YOUR-FIREBASE_AUTH_DOMAIN",
+    FIREBASE_PROJECT_ID: "YOUR-FIREBASE_PROJECT_ID
+  },
+  staging: {
+    GITHUB_ID: "YOUR-GITUHB-ID",
+    GITHUB_SECRET: "YOUR-GITHUB_SECRET",
+    FIREBASE_API_KEY: "YOUR-FIREBASE_API_KEY",
+    FIREBASE_AUTH_DOMAIN: "YOUR-FIREBASE_AUTH_DOMAIN",
+    FIREBASE_PROJECT_ID: "YOUR-FIREBASE_PROJECT_ID
+  },
+  prod: {
+    GITHUB_ID: "YOUR-GITUHB-ID",
+    GITHUB_SECRET: "YOUR-GITHUB_SECRET",
+    FIREBASE_API_KEY: "YOUR-FIREBASE_API_KEY",
+    FIREBASE_AUTH_DOMAIN: "YOUR-FIREBASE_AUTH_DOMAIN",
+    FIREBASE_PROJECT_ID: "YOUR-FIREBASE_PROJECT_ID
+  }
+};
+
+const getEnvVars = (env = Constants.manifest.releaseChannel) => {
+  if (__DEV__) {
+    return ENV.dev;
+  } else if (env === "prod") {
+    return ENV.prod;
+  }
+};
+
+export default getEnvVars;

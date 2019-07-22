@@ -11,3 +11,4 @@ web-report/
 node_modules/
 .DS_Store
 .expo/
+env.js

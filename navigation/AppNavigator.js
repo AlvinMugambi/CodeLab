@@ -1,20 +1,23 @@
-import { createSwitchNavigator, createAppContainer } from "react-navigation";
-import Login from "../components/Login";
-import Profiles from "../components/AllProfiles";
-import App from "./Main";
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+  createAppContainer
+} from "react-navigation";
+import Login from "../screens/Login";
+import Profiles from "../screens/AllProfiles";
+import MyApollo from "../config/apollo";
+import UserProfile from "../screens/Profile";
+import ProfileItem from "../components/ProfileItem";
 
-const Navigator = createSwitchNavigator(
+const AppNavigator = createStackNavigator(
   {
-    // For authentication
-    Auth: Login,
-    // For fetching all profiles
+    Login: Login,
     Profiles: Profiles,
-    // Main app
-    Main: App
+    UserProfile: UserProfile
   },
   {
-    initialRouteName: "Loading"
+    initialRouteName: "Login"
   }
 );
 
-export default createAppContainer(Navigator);
+export default createAppContainer(AppNavigator);

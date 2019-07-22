@@ -1,12 +1,15 @@
 import { AuthSession } from "expo";
+import getEnvVars from "../env";
 
 // The github auth callback URI
 const REDIRECT_URL = AuthSession.getRedirectUrl();
 
+const { GITHUB_ID, GITHUB_SECRET } = getEnvVars();
+
 // Gihub API keys...
 export const github = {
-  id: "631e5c77a9a60f22f5f4",
-  secret: "0b3fbf2e96adff92482b32edd21ba43465bba53f"
+  id: GITHUB_ID,
+  secret: GITHUB_SECRET
 };
 
 const githubFields = [
@@ -71,12 +74,7 @@ async function getGithubTokenAsync() {
     const { token_type, scope, access_token } = await createTokenWithCode(
       params.code
     );
-    // { token_type, scope, access_token }
-    console.log("getGithubTokenAsync: B: ", {
-      token_type,
-      scope,
-      access_token
-    });
+
     return access_token;
   } catch ({ message }) {
     throw new Error(`Github Auth: ${message}`);

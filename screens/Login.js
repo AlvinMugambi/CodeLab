@@ -10,19 +10,24 @@ import {
   Animated,
   Easing
 } from "react-native";
+import getEnvVars from "../env";
 import firebase from "firebase";
-import getGithubTokenAsync from "./getGithubTokenAsync";
-import GithubButton from "./GithubButton";
-import Profiles from "./AllProfiles";
-import MyApollo from "./apollo";
-import CenterSpinner from "./CenterSpinner";
+import getGithubTokenAsync from "../config/getGithubTokenAsync";
+import GithubButton from "../components/GithubButton";
+import ApolloWrapper from "../config/apollo";
+import CenterSpinner from "../components/CenterSpinner";
 
+const {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID
+} = getEnvVars();
 const GithubStorageKey = "@Expo:GithubToken";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC73HiDOEdsS5JH8JRmX6d4wdhzJMF4Ke8",
-  authDomain: "codelab-ab6b4.firebaseapp.com",
-  projectId: "codelab-ab6b4"
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID
 };
 
 function initializeFirebase() {
@@ -50,19 +55,9 @@ async function signInAsync(token) {
   }
 }
 
-async function signOutAsync() {
-  try {
-    await AsyncStorage.removeItem(GithubStorageKey);
-    await firebase.auth().signOut();
-  } catch ({ message }) {
-    alert("Error: " + message);
-  }
-}
-
 async function attemptToRestoreAuthAsync() {
   let token = await AsyncStorage.getItem(GithubStorageKey);
   if (token) {
-    console.log("Sign in with token", token);
     return signInAsync(token);
   }
 }
@@ -75,6 +70,10 @@ export default class Login extends React.Component {
       isSignedIn: false
     };
   }
+
+  static navigationOptions = {
+    header: null
+  };
 
   componentDidMount() {
     this.setupFirebaseAsync();
@@ -103,8 +102,7 @@ export default class Login extends React.Component {
   render() {
     if (this.state.isSignedIn) {
       const user = firebase.auth().currentUser || {};
-
-      return <MyApollo token={user.GithubToken} />;
+      return <ApolloWrapper />;
     }
     return (
       <View style={styles.container}>
