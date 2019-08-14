@@ -1,27 +1,54 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  TouchableOpacity
+} from "react-native";
+import DropdownMenu from "react-native-dropdown-menu";
 
-const Header = () => {
-  return (
-    <View style={styles.header}>
-      <View style={styles.logoDetail}>
-        <Image style={styles.logo} source={require("../assets/icon.png")} />
-        <Text style={styles.logoText}>Code</Text>
-        <Text style={[styles.logoText, styles.specialText]}>Lab</Text>
-      </View>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>Javascript Developers</Text>
-        <View style={styles.location}>
-          <Image
-            style={styles.locationLogo}
-            source={require("../assets/location.png")}
-          />
-          <Text style={{ fontSize: 20 }}>Lagos</Text>
+class Header extends React.Component {
+  state = {
+    txt: ""
+  };
+  render() {
+    const { action, location, page } = this.props;
+    return (
+      <View style={styles.header}>
+        <View style={styles.logoDetail}>
+          <Image style={styles.logo} source={require("../assets/icon.png")} />
+          <Text style={styles.logoText}>Code</Text>
+          <Text style={[styles.logoText, styles.specialText]}>Lab</Text>
+        </View>
+        <View style={styles.title}>
+          <Text style={styles.titleText}>Javascript Developers</Text>
+          <View style={styles.location}>
+            <Image
+              style={styles.locationLogo}
+              source={require("../assets/location.png")}
+            />
+            {page ? (
+              <TextInput
+                style={styles.textInput}
+                value={this.state.txt}
+                onChangeText={value => this.setState({ txt: value })}
+                autoFocus
+                placeholder={location}
+                placeholderTextColor={"black"}
+                onSubmitEditing={event => action(event.nativeEvent.text)}
+                onBlur={() => this.setState({ isEditing: false })}
+              />
+            ) : (
+              <Text>{location}</Text>
+            )}
+          </View>
         </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   header: {
@@ -72,7 +99,12 @@ const styles = StyleSheet.create({
   locationLogo: {
     marginTop: 3,
     width: 18,
-    height: 18
+    height: 18,
+    marginRight: 5
+  },
+  textInput: {
+    paddingLeft: 5,
+    fontSize: 20
   }
 });
 

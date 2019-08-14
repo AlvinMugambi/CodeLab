@@ -10,17 +10,20 @@ import {
   Button
 } from "react-native";
 import { withNavigation } from "react-navigation";
+import { Searchbar } from "react-native-paper";
+import { SearchBar } from "react-native-elements";
 import LoadingScreen from "../components/CenterSpinner";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import ProfileItem from "../components/ProfileItem";
 import Header from "../components/header";
+import NotFound from "../screens/NotFound";
 
 const { width, height } = Dimensions.get("window");
 
 export const FETCH_USERS = gql`
-  query {
-    search(first: 50, type: USER, query: "language:javascript location:lagos") {
+  query($queryString: String!) {
+    search(first: 100, type: USER, query: $queryString) {
       nodes {
         ... on User {
           id
@@ -43,37 +46,72 @@ class Profiles extends Component<Props> {
   static navigationOptions = {
     header: null
   };
+
+  state = {
+    location: "lagos",
+    language: "javascript"
+  };
+
+  onPress = value => {
+    this.setState({
+      location: value
+    });
+  };
+
   render() {
+    const location = this.state.location;
+    const language = this.state.language;
     return (
-      <Query query={FETCH_USERS} variables={{ location: "lagos" }}>
+      <Query
+        query={FETCH_USERS}
+        variables={{ queryString: `location:${location} language:${language}` }}
+      >
         {({ data, error, loading }) => {
           if (error) {
-            console.error(error);
             return (
-              <Text>Woops! We ran into a problem. Kindly bear with us</Text>
+              <Text style={styles.errorText}>
+                Woops! We ran into a problem. Kindly bear with us
+              </Text>
             );
           }
           if (loading) {
-            return <LoadingScreen />;
+            return (
+              <View>
+                <Header
+                  action={this.onPress}
+                  location={this.state.location}
+                  page={"this screen"}
+                />
+                <LoadingScreen />
+              </View>
+            );
           }
           return (
             <View>
-              <Header />
-              <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollViewContainer}
-              >
-                <FlatList
-                  data={data.search.nodes}
-                  renderItem={({ item }) => (
-                    <ProfileItem
-                      profile={item}
-                      navigation={this.props.navigation}
-                    />
-                  )}
-                  keyExtractor={item => item.id.toString()}
-                />
-              </ScrollView>
+              <Header
+                action={this.onPress}
+                location={this.state.location}
+                page={"this screen"}
+              />
+              {data.search.nodes.length == 0 ? (
+                <NotFound />
+              ) : (
+                <ScrollView
+                  style={styles.scrollView}
+                  contentContainerStyle={styles.scrollViewContainer}
+                >
+                  <FlatList
+                    data={data.search.nodes}
+                    renderItem={({ item }) => (
+                      <ProfileItem
+                        profile={item}
+                        navigation={this.props.navigation}
+                      />
+                    )}
+                    keyExtractor={item => item.id.toString()}
+                  />
+                </ScrollView>
+              )}
             </View>
           );
         }}
@@ -83,11 +121,19 @@ class Profiles extends Component<Props> {
 }
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    backgroundColor: "white"
+  },
   profile: {
     flexDirection: "row",
     alignItems: "center",
     marginLeft: 20,
     padding: 20
+  },
+  errorText: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

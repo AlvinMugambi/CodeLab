@@ -8,12 +8,14 @@ import Profiles from "../screens/AllProfiles";
 import MyApollo from "../config/apollo";
 import UserProfile from "../screens/Profile";
 import ProfileItem from "../components/ProfileItem";
+import NotFound from "../screens/NotFound";
 
 const AppNavigator = createStackNavigator(
   {
     Login: Login,
     Profiles: Profiles,
-    UserProfile: UserProfile
+    UserProfile: UserProfile,
+    NotFound: NotFound
   },
   {
     initialRouteName: "Login"
